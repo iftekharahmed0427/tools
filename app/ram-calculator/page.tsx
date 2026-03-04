@@ -21,9 +21,9 @@ export default function RamCalculator() {
   const price = ramGb * PRICE_PER_GB;
 
   return (
-    <div className="container mx-auto max-w-5xl py-42">
+    <div className="container mx-auto max-w-7xl py-42">
       <Card className="bg-[#0E1222] rounded-3xl">
-        <CardContent className="py-2">
+        <CardContent className="py-5 px-12">
           <div className="grid gap-12 md:grid-cols-2">
             <div className="space-y-4">
               <CardHeader className="p-0">
@@ -45,22 +45,28 @@ export default function RamCalculator() {
                 </p>
               </div>
             </div>
-            <div className="flex flex-col justify-center space-y-4">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-[#EFF6FF] text-3xl font-bold">RAM</span>
-                <span className="font-medium text-[#8092AF]">{ramGb} GB</span>
+            <div className="flex flex-col justify-start">
+              <div className="flex items-center gap-2">
+                <p className="text-2xl text-[#8095B2]">Best for: <span className="text-[#2B7FFF]">50 Players</span> </p>
               </div>
-              <Slider
-                value={ram}
-                onValueChange={setRam}
-                min={RAM_MIN}
-                max={RAM_MAX}
-                step={1}
-                className="w-full"
-              />
-              <p className="text-xs text-[#8092AF]">
-                {RAM_MIN} GB – {RAM_MAX} GB
-              </p>
+              <div className="flex items-center justify-between text-sm pt-3">
+                <span className="text-[#EFF6FF] text-3xl font-bold">RAM</span>
+              </div>
+              <div className="flex items-center gap-3 w-full pt-2">
+                <span className="text-lg text-[#8092AF] shrink-0">{RAM_MIN} GB</span>
+                <Slider
+                  value={ram}
+                  onValueChange={setRam}
+                  min={RAM_MIN}
+                  max={RAM_MAX}
+                  step={1}
+                  thumbLabel={`${ramGb} GB`}
+                  className="flex-1 min-w-0"
+                  trackClassName="bg-[#222F45] data-[orientation=horizontal]:h-[16px]"
+                  rangeClassName="bg-[#235AB4]"
+                />
+                <span className="text-lg text-[#8092AF] shrink-0">{RAM_MAX} GB</span>
+              </div>
             </div>
           </div>
         </CardContent>
