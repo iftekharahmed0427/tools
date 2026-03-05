@@ -9,6 +9,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
+import { Flame, Package, Zap } from "lucide-react";
 
 const RAM_MIN = 1;
 const RAM_MAX = 128;
@@ -21,14 +23,28 @@ export default function RamCalculator() {
   const price = ramGb * PRICE_PER_GB;
 
   return (
-    <div className="container mx-auto max-w-7xl py-42">
-      <Card className="bg-[#0E1222] rounded-3xl">
+    <div className="container mx-auto max-w-7xl py-42 space-y-4">
+      <div className="grid grid-cols-3 gap-3">
+        <Button variant="outline" className="w-full bg-[#36446B] hover:bg-[#36446B]/80 text-xl h-12 rounded-lg cursor-pointer backdrop-blur-sm" size="lg">
+        <Package className="size-6" />
+          Budget
+        </Button>
+        <Button variant="outline" className="w-full bg-[#36446B] hover:bg-[#36446B]/80 text-xl h-12 rounded-lg cursor-pointer" size="lg">
+        <Flame className="size-6" />
+          Premium
+        </Button>
+        <Button variant="outline" className="w-full bg-[#36446B] hover:bg-[#36446B]/80 text-xl h-12 rounded-lg cursor-pointer" size="lg">
+        <Zap className="size-6" />
+          Ultimate
+        </Button>
+      </div>
+      <Card className="bg-[#0E1222] rounded-3xl bg-radial-[at_30%_75%] from-[#10294E] to-[#0E1222] calculator-card">
         <CardContent className="py-5 px-12">
           <div className="grid gap-12 md:grid-cols-2">
             <div className="space-y-4">
               <CardHeader className="p-0">
                 <CardTitle className="text-4xl font-bold text-[#DBE9FE]">
-                    <p className="text-[#2B7FFF]">GravelHost</p>
+                    <p className="text-[#2B7FFF]">Gravel Host</p>
                     <p>Ram Calculator</p>
                 </CardTitle>
                 <CardDescription className="text-[#A4BDDE] text-lg">
