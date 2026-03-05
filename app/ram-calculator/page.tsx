@@ -14,28 +14,58 @@ import { Flame, Package, Zap } from "lucide-react";
 
 const RAM_MIN = 1;
 const RAM_MAX = 128;
-const PRICE_PER_GB = 0.90;
+
+const TIERS = {
+  budget: { label: "Budget", pricePerGb: 0.9 },
+  premium: { label: "Premium", pricePerGb: 1.5 },
+  ultimate: { label: "Ultimate", pricePerGb: 3 },
+} as const;
+type Tier = keyof typeof TIERS;
 
 export default function RamCalculator() {
   const [ram, setRam] = useState([8]);
+  const [tier, setTier] = useState<Tier>("budget");
 
   const ramGb = ram[0];
-  const price = ramGb * PRICE_PER_GB;
+  const pricePerGb = TIERS[tier].pricePerGb;
+  const price = ramGb * pricePerGb;
+
+  const buttonBase =
+    "w-full text-xl h-12 rounded-lg cursor-pointer transition-colors ";
+  const buttonInactive =
+    "bg-[#36446B] hover:bg-[#36446B]/80 border-none ring-none";
+  const buttonActive =
+    "bg-[#235AB4] hover:bg-[#235AB4]/90 border-none ring-none";
 
   return (
     <div className="container mx-auto max-w-7xl py-42 space-y-4">
       <div className="grid grid-cols-3 gap-3">
-        <Button variant="outline" className="w-full bg-[#36446B] hover:bg-[#36446B]/80 text-xl h-12 rounded-lg cursor-pointer backdrop-blur-sm" size="lg">
-        <Package className="size-6" />
-          Budget
+        <Button
+          variant="outline"
+          size="lg"
+          className={`${buttonBase} ${tier === "budget" ? buttonActive : buttonInactive}`}
+          onClick={() => setTier("budget")}
+        >
+          <Package className="size-6" />
+          {TIERS.budget.label}
         </Button>
-        <Button variant="outline" className="w-full bg-[#36446B] hover:bg-[#36446B]/80 text-xl h-12 rounded-lg cursor-pointer" size="lg">
-        <Flame className="size-6" />
-          Premium
+        <Button
+          variant="outline"
+          size="lg"
+          className={`${buttonBase} ${tier === "premium" ? buttonActive : buttonInactive}`}
+          onClick={() => setTier("premium")}
+        >
+          <Flame className="size-6" />
+          {TIERS.premium.label}
         </Button>
-        <Button variant="outline" className="w-full bg-[#36446B] hover:bg-[#36446B]/80 text-xl h-12 rounded-lg cursor-pointer" size="lg">
-        <Zap className="size-6" />
-          Ultimate
+        <Button
+          variant="outline"
+          size="lg"
+          className={`${buttonBase} ${tier === "ultimate" ? buttonActive : buttonInactive}`}
+          onClick={() => setTier("ultimate")}
+        >
+          <Zap className="size-6" />
+          {TIERS.ultimate.label}
         </Button>
       </div>
       <Card className="bg-[#0E1222] rounded-3xl bg-radial-[at_30%_75%] from-[#10294E] to-[#0E1222] calculator-card">
