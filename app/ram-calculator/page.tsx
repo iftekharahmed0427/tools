@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { Flame, Package, Zap } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Bean, Flame, Info, Package, PawPrint, Pickaxe, Zap } from "lucide-react";
 
 const RAM_MIN = 1;
 const RAM_MAX = 128;
@@ -22,20 +23,41 @@ const TIERS = {
 } as const;
 type Tier = keyof typeof TIERS;
 
+type Game = "vanilla" | "paper" | "modpacks";
+
+const GAME_DEFAULT_RAM: Record<Game, number> = {
+  vanilla: 8,
+  paper: 12,
+  modpacks: 16,
+};
+
 export default function RamCalculator() {
   const [ram, setRam] = useState([8]);
   const [tier, setTier] = useState<Tier>("budget");
+  const [game, setGame] = useState<Game>("vanilla");
+
+  const selectGame = (g: Game) => {
+    setGame(g);
+    setRam([GAME_DEFAULT_RAM[g]]);
+  };
 
   const ramGb = ram[0];
   const pricePerGb = TIERS[tier].pricePerGb;
   const price = ramGb * pricePerGb;
 
+  const bestForLabel =
+    ramGb >= 32
+      ? "You already know it ;)"
+      : ramGb >= 16
+        ? `${ramGb * 4} Players`
+        : `${ramGb * 2} Players`;
+
   const buttonBase =
     "w-full text-xl h-12 rounded-lg cursor-pointer transition-colors ";
   const buttonInactive =
-    "bg-[#36446B] hover:bg-[#36446B]/80 border-none ring-none";
+    "bg-[#36446B] hover:bg-[#36446B]/80 border-none ring-0";
   const buttonActive =
-    "bg-[#235AB4] hover:bg-[#235AB4]/90 border-none ring-none";
+    "bg-[#235AB4] hover:bg-[#235AB4]/90 border-none ring-0";
 
   return (
     <div className="container mx-auto max-w-7xl py-42 space-y-4">
@@ -93,7 +115,7 @@ export default function RamCalculator() {
             </div>
             <div className="flex flex-col justify-start">
               <div className="flex items-center gap-2">
-                <p className="text-2xl text-[#8095B2]">Best for: <span className="text-[#2B7FFF]">50 Players</span> </p>
+                <p className="text-2xl text-[#8095B2]">Best for: <span className="text-[#2B7FFF]">{bestForLabel}</span></p>
               </div>
               <div className="flex items-center justify-between text-sm pt-3">
                 <span className="text-[#EFF6FF] text-3xl font-bold">RAM</span>
@@ -113,10 +135,42 @@ export default function RamCalculator() {
                 />
                 <span className="text-lg text-[#8092AF] shrink-0">{RAM_MAX} GB</span>
               </div>
+              <div className="flex items-center justify-between text-sm pt-4">
+                <span className="text-[#EFF6FF] text-3xl font-bold">Or, Let us choose</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 w-full pt-2">
+                <Button
+                  className={`w-full text-white border-none ring-0 cursor-pointer text-lg h-10 transition-colors ${game === "vanilla" ? "bg-[#1D58B4] hover:bg-[#1D58B4]/90" : "bg-[#36446B] hover:bg-[#36446B]/80"}`}
+                  onClick={() => selectGame("vanilla")}
+                >
+                  <Pickaxe className="size-5" />
+                  Vanilla
+                </Button>
+                <Button
+                  className={`w-full text-white border-none ring-0 cursor-pointer text-lg h-10 transition-colors ${game === "paper" ? "bg-[#1D58B4] hover:bg-[#1D58B4]/90" : "bg-[#36446B] hover:bg-[#36446B]/80"}`}
+                  onClick={() => selectGame("paper")}
+                >
+                  <PawPrint className="size-5" />
+                  Paper/Purpur
+                </Button>
+                <Button
+                  className={`w-full text-white border-none ring-0 cursor-pointer text-lg h-10 transition-colors ${game === "modpacks" ? "bg-[#1D58B4] hover:bg-[#1D58B4]/90" : "bg-[#36446B] hover:bg-[#36446B]/80"}`}
+                  onClick={() => selectGame("modpacks")}
+                >
+                  <Bean className="size-5" />
+                  Modpacks
+                </Button>
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
+      <Alert className="calculator-info-bar rounded-lg border-[#222F45] bg-[#0E1222] text-[#A4BDDE] [&>svg]:text-[#2B7FFF]">
+        <Info className="size-5" />
+        <AlertDescription className="text-[#A4BDDE]">
+          Ram consumption might vary based on your server setup and mods/plugins. Please use this calculator as a guide only.
+        </AlertDescription>
+      </Alert>
     </div>
   );
 }
