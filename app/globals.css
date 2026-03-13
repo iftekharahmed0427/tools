@@ -4,7 +4,34 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Minecraft font – use only where needed via font-minecraft */
+@font-face {
+  font-family: "minecraft";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/1_MinecraftRegular1.woff") format("woff");
+}
+@font-face {
+  font-family: "minecraft";
+  font-style: italic;
+  font-weight: 400;
+  src: url("/fonts/2_MinecraftItalic1.woff") format("woff");
+}
+@font-face {
+  font-family: "minecraft";
+  font-style: normal;
+  font-weight: 700;
+  src: url("/fonts/3_MinecraftBold1.woff") format("woff");
+}
+@font-face {
+  font-family: "minecraft";
+  font-style: italic;
+  font-weight: 700;
+  src: url("/fonts/4_MinecraftBoldItalic1.woff") format("woff");
+}
+
 @theme inline {
+  --font-minecraft: "minecraft", ui-monospace, monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-text-primary: var(--text-primary);
@@ -45,6 +72,41 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  --color-mc-black: var(--color-mc-black);
+  --color-mc-dark-blue: var(--color-mc-dark-blue);
+  --color-mc-dark-green: var(--color-mc-dark-green);
+  --color-mc-dark-aqua: var(--color-mc-dark-aqua);
+  --color-mc-dark-red: var(--color-mc-dark-red);
+  --color-mc-dark-purple: var(--color-mc-dark-purple);
+  --color-mc-gold: var(--color-mc-gold);
+  --color-mc-gray: var(--color-mc-gray);
+  --color-mc-dark-gray: var(--color-mc-dark-gray);
+  --color-mc-blue: var(--color-mc-blue);
+  --color-mc-green: var(--color-mc-green);
+  --color-mc-aqua: var(--color-mc-aqua);
+  --color-mc-red: var(--color-mc-red);
+  --color-mc-light-purple: var(--color-mc-light-purple);
+  --color-mc-yellow: var(--color-mc-yellow);
+  --color-mc-white: var(--color-mc-white);
+}
+
+.minecraft-colors {
+  --color-mc-black: #000000;
+  --color-mc-dark-blue: #0000AA ;
+  --color-mc-dark-green: #00AA00;
+  --color-mc-dark-aqua: #00AAAA;
+  --color-mc-dark-red: #AA0000;
+  --color-mc-dark-purple: #AA00AA;
+  --color-mc-gold: #FFAA00;
+  --color-mc-gray: #AAAAAA;
+  --color-mc-dark-gray: #555555;
+  --color-mc-blue: #5555FF;
+  --color-mc-green: #55FF55;
+  --color-mc-aqua: #55FFFF;
+  --color-mc-red: #FF5555;
+  --color-mc-light-purple: #FF55FF;
+  --color-mc-yellow: #FFFF55;
+  --color-mc-white: #FFFFFF;
 }
 
 body {
@@ -129,3 +191,24 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.toolbar-button {
+  padding: 0 2px;
+  border-radius: 2px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.5;
+  position: relative;
+  box-sizing: content-box;
+  background-image: linear-gradient(rgba(255,255,255,.2),rgba(255,255,255,.2));
+  cursor: pointer;
+  margin-right: 0;
+  min-width: 16px;
+  min-height: 23px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: unset;
+  margin-right: 5px;
+}
+
