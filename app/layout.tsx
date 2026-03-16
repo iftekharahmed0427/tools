@@ -21,7 +21,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${play.variable} antialiased`}
+        className={`${play.variable} antialiased bg-gray-900`}
+        suppressHydrationWarning
       >
         {children}
       </body>

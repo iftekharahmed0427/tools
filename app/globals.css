@@ -90,6 +90,10 @@
   --color-mc-white: var(--color-mc-white);
 }
 
+.mcformat-code-hidden .mcformat-code {
+  display: none;
+}
+
 .minecraft-colors {
   --color-mc-black: #000000;
   --color-mc-dark-blue: #0000AA ;
