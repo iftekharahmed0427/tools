@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Check, Copy } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -145,10 +146,16 @@ function applyFormatToSelection(editorRoot: HTMLDivElement | null, formatKey: st
   if (!range || !editorRoot.contains(range.commonAncestorContainer)) return;
 
   const code = MOTD_CODE_PREFIX + formatKey;
-  const displayClass = COLOR_CLASSES[formatKey] ?? "";
+  const displayClass = formatKey === "r" ? "" : (COLOR_CLASSES[formatKey] ?? "");
 
   const wrapper = document.createElement("span");
-  wrapper.className = "motd-fmt" + (displayClass ? " " + displayClass : "");
+  if (formatKey === "r") {
+    // Ensure reset is visible even inside colored/format spans
+    wrapper.className =
+      "motd-fmt motd-reset text-[#7e7e7e] font-normal not-italic no-underline";
+  } else {
+    wrapper.className = "motd-fmt" + (displayClass ? " " + displayClass : "");
+  }
 
   const codeSpan = document.createElement("span");
   codeSpan.className = "motd-code";
@@ -160,8 +167,15 @@ function applyFormatToSelection(editorRoot: HTMLDivElement | null, formatKey: st
     range.setStart(wrapper, 1);
     range.collapse(true);
   } else {
-    const frag = range.extractContents();
-    wrapper.appendChild(frag);
+    if (formatKey === "r") {
+      // Reset should remove existing formatting inside selection (visual + output)
+      const text = range.toString();
+      range.deleteContents();
+      wrapper.appendChild(document.createTextNode(text));
+    } else {
+      const frag = range.extractContents();
+      wrapper.appendChild(frag);
+    }
     range.insertNode(wrapper);
     range.setStartAfter(wrapper);
     range.collapse(true);
@@ -175,6 +189,14 @@ export default function MotdCreatorPage() {
   const line1Ref = useRef<HTMLDivElement>(null);
   const line2Ref = useRef<HTMLDivElement>(null);
   const [motdValue, setMotdValue] = useState("");
+  const [copied, setCopied] = useState(false);
+  const copyMotd = useCallback(() => {
+    if (!motdValue) return;
+    navigator.clipboard.writeText(motdValue).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  }, [motdValue]);
 
   const syncMotd = useCallback(() => {
     const part1 = elementToMotd(line1Ref.current);
@@ -297,11 +319,23 @@ export default function MotdCreatorPage() {
                     </div>
                   </div>
                 </div>
-                <input
-                  readOnly
-                  value={motdValue.replace(/\n/g, "\\n")}
-                  className="mt-3 min-w-0 w-full max-w-[642px] mx-auto bg-muted/50 border border-muted rounded-md px-3 py-2 text-muted-foreground font-mono text-sm"
-                  placeholder="motd= (generated from editor above)" />
+                <div className="mt-3 flex items-center gap-2 w-full max-w-[642px] mx-auto">
+                  <input
+                    readOnly
+                    value={motdValue.replace(/\n/g, "\\n")}
+                    className="text-white min-w-0 flex-1 rounded-md px-3 py-2 font-mono text-sm bg-[#36446B] border-none outline-none focus:ring-0 focus:outline-none"
+                    placeholder="motd= (generated from editor above)" />
+                  <button
+                    type="button"
+                    onClick={copyMotd}
+                    className="shrink-0 rounded-md px-3 py-2 text-sm font-medium bg-[#36446B] text-white hover:bg-[#3f4d7a] transition-colors outline-none focus:ring-0 focus:outline-none font-sans"
+                  >
+                    <span className="inline-flex items-center gap-2">
+                      {copied ? <Check size={16} /> : <Copy size={16} />}
+                      <span>{copied ? "Copied!" : "Copy"}</span>
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

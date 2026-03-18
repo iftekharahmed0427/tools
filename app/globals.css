@@ -114,7 +114,7 @@
 }
 
 body {
-  font-family: Play;
+  font-family: var(--font-play), ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
