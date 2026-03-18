@@ -241,7 +241,8 @@ export default function MotdCreatorPage() {
 
   return (
     <div className="container mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-12 md:py-16">
-      <Card className="bg-[#0E1222] rounded-2xl sm:rounded-3xl bg-radial-[at_30%_75%] from-[#10294E] to-[#0E1222] calculator-card">
+      {/* <Card className="bg-[#0E1222] rounded-2xl sm:rounded-3xl bg-radial-[at_30%_75%] from-[#10294E] to-[#0E1222] calculator-card"> */}
+      <Card className="bg-transparent calculator-card border-none ring-0 shadow-none">
         <CardContent className="py-4 px-4 sm:px-6 md:px-12">
           <div className="space-y-6 md:space-y-12">
             <CardHeader className="p-0">
@@ -252,23 +253,39 @@ export default function MotdCreatorPage() {
                 Edit and preview your server MOTD.
               </CardDescription>
             </CardHeader>
-            <div className="flex flex-col justify-center items-center max-w-[610px] mx-auto">
-              <div className="editor-container relative mx-auto w-full font-minecraft">
-                <div className="editor-inner relative min-h-[64px] w-[610px] bg-repeat bg-size-[80px] pt-3 pr-5 pb-3 pl-3 flex box-content" style={{ backgroundImage: "url('/minecraft-background.png')" }}>
+            <div className="flex flex-col justify-center items-center w-full mx-auto">
+              <div
+                className="editor-container relative mx-auto w-full font-minecraft overflow-x-hidden"
+                style={
+                  {
+                    // Keep original proportions (610 editor, 642 toolbar/output = +32px),
+                    // but shrink to fit small screens.
+                    "--motd-row-w": "min(642px, calc(100vw - 2rem))",
+                  } as React.CSSProperties
+                }
+              >
+                <div
+                  className="editor-inner relative min-h-[64px] w-(--motd-row-w) bg-repeat p-3 sm:pr-5 flex box-border mx-auto"
+                  style={{
+                    backgroundImage: "url('/minecraft-background.png')",
+                    // 80px tile size at 642px row width, scale proportionally on smaller screens
+                    backgroundSize: "calc(var(--motd-row-w) * 80 / 642)",
+                  }}
+                >
                   <div className="server-icon relative mr-1.5">
-                    <Image src="/unknown_server.jpg" alt="Server Icon" width={64} height={64} />
+                    <Image src="/unknown_server.jpg" alt="Server Icon" width={64} height={64} className="w-12 h-12 sm:w-16 sm:h-16" />
                   </div>
-                  <div className="server-texts text-white text-[19px] leading-3.5">
+                  <div className="server-texts text-white text-[16px] sm:text-[19px] leading-3.5 flex-1 min-w-0">
                     <div className="server-name mt-1 whitespace-pre-wrap">Minecraft Server</div>
                     <div className="editor mt-1.5 leading-[18px]">
                         <div className="motd-editor h-full flex flex-col text-white">
                         <div className="output" />
-                        <div className="editor-wrapper text-[#7e7e7e] text-[19px] leading-[20px] minecraft-colors [&_.motd-code]:hidden">
+                        <div className="editor-wrapper text-[#7e7e7e] text-[16px] sm:text-[19px] leading-[20px] minecraft-colors [&_.motd-code]:hidden">
                           <div
                             ref={line1Ref}
                             contentEditable
                             suppressContentEditableWarning
-                            className="outline-none empty:before:content-[''] empty:before:text-[#7e7e7e] min-h-[1.25em]"
+                            className="outline-none empty:before:content-[''] empty:before:text-[#7e7e7e] min-h-[1.25em] wrap-break-word"
                             onInput={syncMotd}
                             onKeyDown={(e) => handleKeyDown(e, 1)}
                             spellCheck={false}
@@ -277,7 +294,7 @@ export default function MotdCreatorPage() {
                             ref={line2Ref}
                             contentEditable
                             suppressContentEditableWarning
-                            className="outline-none empty:before:content-[''] empty:before:text-[#7e7e7e] min-h-[1.25em]"
+                            className="outline-none empty:before:content-[''] empty:before:text-[#7e7e7e] min-h-[1.25em] wrap-break-word"
                             onInput={syncMotd}
                             onKeyDown={(e) => handleKeyDown(e, 2)}
                             spellCheck={false}
@@ -287,10 +304,10 @@ export default function MotdCreatorPage() {
                     </div>
                   </div>
                 </div>
-                <div className="editor-bar-bottom min-w-[642px] bg-[#2C385C] flex justify-between items-center pt-2 pb-2 pl-3 pr-3 rounded-bl-[5px] rounded-br-[5px] relative">
+                <div className="editor-bar-bottom w-(--motd-row-w) max-w-full bg-[#2C385C] flex justify-between items-center py-2 px-3 rounded-bl-[5px] rounded-br-[5px] relative mx-auto">
                   <div className="toolbar w-full">
-                    <div className="toolbar-wrapper justify-center w-full flex items-center">
-                      <div className="toolbar-color-buttons flex items-center flex-wrap h-full minecraft-colors">
+                    <div className="toolbar-wrapper justify-center w-full flex flex-col sm:flex-row items-center gap-2">
+                      <div className="toolbar-color-buttons flex items-center flex-wrap h-full minecraft-colors justify-center w-full sm:w-auto">
                         {(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"] as const).map((key) => (
                           <button
                             key={key}
@@ -303,7 +320,7 @@ export default function MotdCreatorPage() {
                           </button>
                         ))}
                       </div>
-                      <div className="toolbar-format-buttons flex flex-wrap items-center h-full justify-center minecraft-colors">
+                      <div className="toolbar-format-buttons flex flex-wrap items-center h-full justify-center minecraft-colors w-full sm:w-auto">
                         {(["l", "m", "n", "o", "r", "k"] as const).map((key) => (
                           <button
                             key={key}
@@ -319,7 +336,8 @@ export default function MotdCreatorPage() {
                     </div>
                   </div>
                 </div>
-                <div className="mt-3 flex items-center gap-2 w-full max-w-[642px] mx-auto">
+                <div className="mt-3 w-(--motd-row-w) max-w-full mx-auto">
+                  <div className="flex items-center gap-2">
                   <input
                     readOnly
                     value={motdValue.replace(/\n/g, "\\n")}
@@ -335,6 +353,7 @@ export default function MotdCreatorPage() {
                       <span>{copied ? "Copied!" : "Copy"}</span>
                     </span>
                   </button>
+                  </div>
                 </div>
               </div>
             </div>
