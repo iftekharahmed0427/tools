@@ -240,7 +240,7 @@ export default function MotdCreatorPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-12 md:py-16">
+    <div className="container mx-auto max-w-7xl px-4 sm:px-6 py-0.5 sm:py-1 md:py-1">
       {/* <Card className="bg-[#0E1222] rounded-2xl sm:rounded-3xl bg-radial-[at_30%_75%] from-[#10294E] to-[#0E1222] calculator-card"> */}
       <Card className="bg-transparent calculator-card border-none ring-0 shadow-none">
         <CardContent className="py-4 px-4 sm:px-6 md:px-12">
