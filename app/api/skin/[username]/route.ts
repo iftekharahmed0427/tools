@@ -2,16 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ uuid: string }> },
+  { params }: { params: Promise<{ username: string }> },
 ) {
-  const { uuid } = await params;
+  const { username } = await params;
 
-  if (!/^[a-f0-9-]{32,36}$/i.test(uuid)) {
-    return NextResponse.json({ error: "Invalid UUID" }, { status: 400 });
+  if (!/^[a-zA-Z0-9_]{1,16}$/.test(username)) {
+    return NextResponse.json({ error: "Invalid username" }, { status: 400 });
   }
 
   const res = await fetch(
-    `https://crafatar.com/skins/${uuid}?default=MHF_Steve`,
+    `https://minotar.net/skin/${encodeURIComponent(username)}`,
   );
 
   if (!res.ok) {

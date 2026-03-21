@@ -73,9 +73,8 @@ export default function SkinGrabber() {
       setCurrentSearch(username);
 
       try {
-        const res = await fetch(
-          `https://api.ashcon.app/mojang/v2/user/${encodeURIComponent(username)}`,
-        );
+        const skinPath = `/api/skin/${encodeURIComponent(username)}`;
+        const res = await fetch(skinPath);
 
         if (!res.ok) {
           setNoAccountFound(true);
@@ -83,16 +82,12 @@ export default function SkinGrabber() {
           return;
         }
 
-        const data = await res.json();
-        const skinTexture = `/api/skin/${data.uuid}`;
-        const skinDownload = `/api/skin/${data.uuid}`;
-
-        setSkinUrl(skinDownload);
+        setSkinUrl(skinPath);
         setLoading(false);
 
         // Small delay so the canvas is rendered before initializing the viewer
         setTimeout(() => {
-          initViewer(skinTexture, data.username ?? username);
+          initViewer(skinPath, username);
         }, 10);
       } catch {
         setNoAccountFound(true);
