@@ -44,10 +44,14 @@ export default function SkinGrabber() {
 
       viewerRef.current?.dispose();
 
+      const isMobile = window.innerWidth < 640;
+      const width = isMobile ? 220 : 300;
+      const height = isMobile ? 300 : 400;
+
       const viewer = new SkinViewer({
         canvas: canvasRef.current,
-        height: 400,
-        width: 300,
+        height,
+        width,
         skin: skinSrc,
       });
       viewer.autoRotate = false;
@@ -145,9 +149,9 @@ export default function SkinGrabber() {
           </CardHeader>
 
           {/* Search bar */}
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3">
             <input
-              className="flex-1 rounded-lg bg-[#141517] text-[#DBE9FE] placeholder-[#8092AF] px-4 py-2 text-base border border-[#222F45] outline-none focus:border-[#235AB4] transition-colors"
+              className="flex-1 min-w-0 rounded-lg bg-[#141517] text-[#DBE9FE] placeholder-[#8092AF] px-3 sm:px-4 py-2 text-base border border-[#222F45] outline-none focus:border-[#235AB4] transition-colors"
               maxLength={16}
               type="text"
               placeholder="Enter username..."
@@ -157,28 +161,28 @@ export default function SkinGrabber() {
               onKeyUp={handleKeyPress}
             />
             <Button
-              className={`${buttonBase} ${buttonStyle} px-6`}
+              className={`${buttonBase} ${buttonStyle} px-3 sm:px-6`}
               onClick={() => updateSkin(searchValue)}
             >
               <Search className="size-4" />
-              Search
+              <span className="hidden sm:inline">Search</span>
             </Button>
           </div>
 
           {/* Skin viewer area */}
-          <div className="flex flex-col items-center mt-6 min-h-[420px]">
+          <div className="flex flex-col items-center mt-6 min-h-[320px] sm:min-h-[420px]">
             {loading ? (
-              <div className="flex items-center justify-center h-[400px]">
+              <div className="flex items-center justify-center h-[300px] sm:h-[400px]">
                 <Loader2 className="size-10 animate-spin text-[#2B7FFF]" />
               </div>
             ) : noAccountFound ? (
-              <p className="mt-10 text-[#F55050] text-2xl text-center">
+              <p className="mt-10 text-[#F55050] text-xl sm:text-2xl text-center">
                 No account with this username has been found.
               </p>
             ) : (
               <>
                 <canvas ref={canvasRef} className="rounded-lg" />
-                <div className="flex gap-4 mt-4">
+                <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mt-4">
                   <a href={skinUrl} download>
                     <Button
                       className={`${buttonBase} ${buttonStyle}`}
@@ -206,19 +210,19 @@ export default function SkinGrabber() {
 
           {/* Shareable link */}
           {!loading && currentSearch && (
-            <div className="flex flex-col mt-8 items-center">
-              <h3 className="font-medium text-white text-lg text-center">
+            <div className="flex flex-col mt-6 sm:mt-8 items-center">
+              <h3 className="font-medium text-white text-base sm:text-lg text-center">
                 Shareable Link
               </h3>
-              <div className="flex gap-3 mt-2 w-full max-w-md">
+              <div className="flex gap-2 sm:gap-3 mt-2 w-full max-w-md">
                 <input
                   disabled
                   value={shareableLink}
-                  className="flex-1 text-sm text-gray-400 font-mono rounded-md p-2 bg-[#141517] h-[35px] border border-[#222F45]"
+                  className="flex-1 min-w-0 text-xs sm:text-sm text-gray-400 font-mono rounded-md p-2 bg-[#141517] h-[35px] border border-[#222F45] truncate"
                 />
                 <Button
                   onClick={copyLink}
-                  className={`${buttonBase} ${buttonStyle} text-sm px-3 h-[35px]`}
+                  className={`${buttonBase} ${buttonStyle} text-sm px-3 h-[35px] shrink-0`}
                 >
                   {copied ? (
                     <Check className="size-4" />
