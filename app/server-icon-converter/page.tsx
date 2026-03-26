@@ -147,6 +147,14 @@ export default function ServerIconConverter() {
                   </div>
                 </div>
               </div>
+              <a
+                href="https://gravelhost.com/minecraft-motd-editor"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 text-sm sm:text-base text-[#A4BDDE] hover:text-[#2B7FFF] transition-colors"
+              >
+                Need a custom MOTD? Try our MOTD Generator →
+              </a>
             </div>
           </div>
         </CardContent>
