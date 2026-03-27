@@ -43,6 +43,30 @@ Look up any Minecraft player's skin by username, view it in 3D, and download or 
 - Shareable deep-links via URL hash (`#ign=username`)
 - Proxied through a local API route to avoid CORS issues
 
+### Cape Grabber (`/cape-grabber`)
+
+Look up any Minecraft player's capes across multiple providers and download them.
+
+- Fetches capes from Mojang, Optifine, MinecraftCapes, LabyMod, 5zig, and TLauncher
+- Download cape images directly
+- Shareable deep-links via URL hash (`#ign=username`)
+
+### Server Icon Converter (`/server-icon-converter`)
+
+Upload any image and convert it to a properly sized Minecraft server icon.
+
+- Resizes images to the required 64×64 pixels
+- Live preview before downloading
+- Download the converted icon ready to drop into your server folder
+
+### Start File Generator (`/start-file-generator`)
+
+Generate server startup scripts (`.bat` / `.sh`) with optimized JVM flags.
+
+- Supports Aikar's flags and proxy server presets
+- Configurable memory allocation and JAR file name
+- Outputs ready-to-use batch (Windows) and shell (Linux/macOS) scripts
+
 ---
 
 ## API Routes
@@ -58,6 +82,8 @@ Proxies skin requests to [Minotar](https://minotar.net) and returns the PNG imag
 ```
 app/
 ├── api/skin/[username]/route.ts   # Skin proxy API
+├── cape-grabber/
+│   └── page.tsx
 ├── minecraft-ram-calculator/
 │   └── page.tsx
 ├── motd-creator/
@@ -65,7 +91,11 @@ app/
 │   ├── constants.ts               # Color/format maps
 │   ├── motd-utils.ts              # Parsing & formatting logic
 │   └── types.ts                   # Shared types
+├── server-icon-converter/
+│   └── page.tsx
 ├── skin-grabber/
+│   └── page.tsx
+├── start-file-generator/
 │   └── page.tsx
 ├── layout.tsx                     # Root layout & metadata
 ├── globals.css                    # Tailwind config, Minecraft colors, custom fonts
