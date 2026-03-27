@@ -142,7 +142,7 @@ export default function ServerIconConverter() {
                 </div>
                 <div className="font-minecraft text-white text-[16px] sm:text-[19px] leading-3.5 flex-1 min-w-0">
                   <div className="mt-1 whitespace-pre-wrap">Minecraft Server</div>
-                  <div className="mt-1.5 leading-[18px] text-[#7e7e7e] text-[16px] sm:text-[19px] leading-[20px]">
+                  <div className="mt-1.5 text-[#7e7e7e] text-[16px] sm:text-[19px] leading-[20px]">
                     <div className="min-h-[1.25em]">A Minecraft Server</div>
                   </div>
                 </div>

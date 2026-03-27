@@ -126,7 +126,7 @@ export default function MotdCreatorPage() {
                   </div>
                   <div className="server-texts text-white text-[16px] sm:text-[19px] leading-3.5 flex-1 min-w-0">
                     <div className="server-name mt-1 whitespace-pre-wrap">Minecraft Server</div>
-                    <div className="mt-1.5 leading-[18px] text-[#7e7e7e] text-[16px] sm:text-[19px] leading-[20px] minecraft-colors [&_.motd-code]:hidden">
+                    <div className="mt-1.5 text-[#7e7e7e] text-[16px] sm:text-[19px] leading-[20px] minecraft-colors [&_.motd-code]:hidden">
                       <div
                         ref={line1Ref}
                         contentEditable
@@ -204,7 +204,7 @@ export default function MotdCreatorPage() {
                 </div>
               </div>
               <a
-                href="https://gravelhost.com/minecraft-motd-editor"
+                href="https://gravelhost.com/minecraft-server-icon-converter"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-3 text-sm sm:text-base text-[#A4BDDE] hover:text-[#2B7FFF] transition-colors"

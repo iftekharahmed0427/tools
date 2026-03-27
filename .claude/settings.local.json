@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find /c/GravelHost/tools/components -name * -type f)"
+      "Bash(find /c/GravelHost/tools/components -name * -type f)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

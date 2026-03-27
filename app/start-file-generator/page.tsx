@@ -143,7 +143,7 @@ export default function StartFileGenerator() {
                 <div className="flex items-center gap-3">
                   <label className="text-sm text-[#94A0B6]">RAM</label>
                   <a
-                    href="/minecraft-ram-calculator"
+                    href="https://gravelhost.com/minecraft-ram-calculator"
                     className="text-xs text-[#2B7FFF] hover:text-[#2B7FFF]/80 transition-colors"
                   >
                     Need help? Use our RAM Calculator →
