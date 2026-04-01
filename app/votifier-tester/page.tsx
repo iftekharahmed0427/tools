@@ -12,8 +12,6 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Info, Send, CheckCircle, XCircle } from "lucide-react";
 
-type Protocol = "auto" | "1" | "2";
-
 interface VoteResult {
   success: boolean;
   version?: string;
@@ -29,7 +27,6 @@ export default function VotifierTester() {
   const [address, setAddress] = useState("127.0.0.1");
   const [publicKey, setPublicKey] = useState("");
   const [token, setToken] = useState("");
-  const [protocol, setProtocol] = useState<Protocol>("auto");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<VoteResult | null>(null);
 
@@ -52,7 +49,7 @@ export default function VotifierTester() {
           address: address.trim() || "127.0.0.1",
           publicKey: publicKey.trim() || undefined,
           token: token.trim() || undefined,
-          protocol: protocol === "auto" ? "auto" : `v${protocol}`,
+          protocol: "auto",
         }),
       });
 
@@ -79,9 +76,6 @@ export default function VotifierTester() {
 
   const labelClass = "block text-sm text-[#94A0B6] mb-1";
 
-  const buttonBase =
-    "w-full text-base sm:text-lg h-10 sm:h-12 rounded-lg cursor-pointer transition-colors border-none ring-0";
-
   return (
     <div className="container mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-2 md:py-2 space-y-4 bg-transparent">
       <Card className="bg-[#0E1222] rounded-2xl sm:rounded-3xl bg-radial-[at_30%_75%] from-[#10294E] to-[#0E1222] calculator-card">
@@ -97,28 +91,6 @@ export default function VotifierTester() {
                 Send a test vote to your Minecraft server to verify your Votifier setup is working.
               </CardDescription>
             </CardHeader>
-
-            {/* Protocol selector */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 max-w-md mx-auto">
-              <Button
-                className={`${buttonBase} ${protocol === "auto" ? "bg-[#235AB4] hover:bg-[#235AB4]/90" : "bg-[#36446B] hover:bg-[#36446B]/80"}`}
-                onClick={() => setProtocol("auto")}
-              >
-                Auto
-              </Button>
-              <Button
-                className={`${buttonBase} ${protocol === "1" ? "bg-[#235AB4] hover:bg-[#235AB4]/90" : "bg-[#36446B] hover:bg-[#36446B]/80"}`}
-                onClick={() => setProtocol("1")}
-              >
-                Votifier v1
-              </Button>
-              <Button
-                className={`${buttonBase} ${protocol === "2" ? "bg-[#235AB4] hover:bg-[#235AB4]/90" : "bg-[#36446B] hover:bg-[#36446B]/80"}`}
-                onClick={() => setProtocol("2")}
-              >
-                Votifier v2
-              </Button>
-            </div>
 
             {/* Form */}
             <div className="grid gap-6 md:gap-8 md:grid-cols-2 max-w-4xl mx-auto">
@@ -183,31 +155,27 @@ export default function VotifierTester() {
                     className={inputClass}
                   />
                 </div>
-                {protocol !== "2" && (
-                  <div>
-                    <label className={labelClass}>Public Key <span className="text-[#8092AF]">(v1)</span></label>
-                    <textarea
-                      placeholder="-----BEGIN PUBLIC KEY-----&#10;...&#10;-----END PUBLIC KEY-----"
-                      value={publicKey}
-                      onChange={(e) => setPublicKey(e.target.value)}
-                      rows={3}
-                      className={`${inputClass} resize-none`}
-                    />
-                  </div>
-                )}
-                {protocol !== "1" && (
-                  <div>
-                    <label className={labelClass}>Token <span className="text-[#8092AF]">(v2)</span></label>
-                    <input
-                      type="text"
-                      placeholder="Your Votifier token"
-                      value={token}
-                      onChange={(e) => setToken(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      className={inputClass}
-                    />
-                  </div>
-                )}
+                <div>
+                  <label className={labelClass}>Public Key <span className="text-[#8092AF]">(v1)</span></label>
+                  <textarea
+                    placeholder="-----BEGIN PUBLIC KEY-----&#10;...&#10;-----END PUBLIC KEY-----"
+                    value={publicKey}
+                    onChange={(e) => setPublicKey(e.target.value)}
+                    rows={3}
+                    className={`${inputClass} resize-none`}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>Token <span className="text-[#8092AF]">(v2)</span></label>
+                  <input
+                    type="text"
+                    placeholder="Your Votifier token"
+                    value={token}
+                    onChange={(e) => setToken(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    className={inputClass}
+                  />
+                </div>
               </div>
             </div>
 
