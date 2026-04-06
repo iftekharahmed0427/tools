@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Firework Creator – Gravel Host</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #070b14;
+      color: #DBE9FE;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Card */
+    .card {
+      background: radial-gradient(ellipse at 30% 75%, #10294E, #0E1222);
+      border-radius: 24px;
+      padding: 40px 48px;
+    }
+
+    /* Header */
+    .header { margin-bottom: 32px; }
+    .header-brand { color: #2B7FFF; font-size: 2rem; font-weight: 700; line-height: 1.1; }
+    .header-title { font-size: 2rem; font-weight: 700; line-height: 1.1; }
+    .header-desc { color: #A4BDDE; font-size: 1rem; margin-top: 8px; }
+
+    /* Two-column grid */
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .grid-2col { grid-template-columns: 1fr; }
+      .card { padding: 24px 20px; }
+    }
+
+    /* Section label */
+    .section-label {
+      color: #94A0B6;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+    .section-sublabel {
+      color: #94A0B6;
+      font-size: 0.75rem;
+      margin-top: 2px;
+      margin-bottom: 10px;
+    }
+    .section-title {
+      color: #DBE9FE;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .controls { display: flex; flex-direction: column; gap: 24px; }
+
+    /* Color grid */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .color-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #222F45;
+      background: transparent;
+      color: #94A0B6;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .color-btn:hover { border-color: #8092AF; }
+    .color-btn.active { border-color: #2B7FFF; background: rgba(35,90,180,0.2); color: #DBE9FE; }
+    .color-btn img { width: 20px; height: 20px; flex-shrink: 0; image-rendering: pixelated; }
+    .color-btn span { overflow: hidden; text-overflow: ellipsis; }
+
+    /* Image button grid */
+    .img-btn-grid { display: grid; gap: 8px; }
+    .img-btn-grid.cols-5 { grid-template-columns: repeat(5, 1fr); }
+    .img-btn-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .img-btn-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 600px) {
+      .img-btn-grid.cols-5 { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .img-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 4px;
+      border: 2px solid #626875;
+      border-radius: 12px;
+      background: transparent;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .img-btn:hover { border-color: #8092AF; }
+    .img-btn.active { background: #235AB4; border-color: #235AB4; }
+    .img-btn img { width: 100%; border-radius: 10px; image-rendering: pixelated; }
+    .img-btn p { padding: 6px 0; font-weight: 400; font-size: 0.875rem; }
+
+    /* Side-by-side effect/flight */
+    .side-by-side {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    /* Errors */
+    .error-box {
+      border-radius: 8px;
+      border: 1px solid rgba(239,68,68,0.4);
+      background: rgba(127,0,0,0.2);
+      padding: 12px 16px;
+      font-size: 0.875rem;
+      color: #fca5a5;
+      display: none;
+    }
+    .error-box p { margin-bottom: 4px; }
+    .error-box p:last-child { margin-bottom: 0; }
+
+    /* Generate button */
+    .btn-generate {
+      width: 100%;
+      background: #235AB4;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      height: 40px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-generate:hover { opacity: 0.9; }
+
+    /* Results panel */
+    .results-placeholder {
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      border: 1px dashed #222F45;
+      color: #94A0B6;
+      font-size: 0.875rem;
+    }
+
+    .results { display: flex; flex-direction: column; gap: 16px; }
+
+    /* Output field */
+    .output-field { display: flex; flex-direction: column; gap: 6px; }
+    .output-row { display: flex; gap: 8px; align-items: flex-start; }
+    .output-input, .output-textarea {
+      flex: 1;
+      min-width: 0;
+      font-size: 0.875rem;
+      color: #A4BDDE;
+      font-family: monospace;
+      background: #141517;
+      border: 1px solid #222F45;
+      border-radius: 6px;
+      outline: none;
+      resize: none;
+    }
+    .output-input { height: 36px; padding: 0 12px; }
+    .output-textarea { padding: 8px; rows: 5; }
+
+    .btn-copy {
+      background: #235AB4;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      height: 36px;
+      padding: 0 12px;
+      font-size: 0.875rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      transition: opacity 0.15s;
+    }
+    .btn-copy:hover { opacity: 0.9; }
+    .btn-copy svg { width: 16px; height: 16px; }
+
+    /* Crafting section */
+    .crafting-section { padding-top: 8px; }
+    .crafting-title { font-size: 1rem; font-weight: 500; color: #DBE9FE; margin-bottom: 16px; }
+    .crafting-step-title { font-size: 0.875rem; font-weight: 500; color: #A4BDDE; margin-bottom: 12px; }
+    .crafting-steps { display: flex; flex-direction: column; gap: 24px; }
+
+    .crafting-table-wrap { overflow-x: auto; }
+    .crafting-table-inner {
+      position: relative;
+      width: 370px;
+      height: 170px;
+      margin: 0 auto;
+    }
+    .crafting-table-inner img.table-bg {
+      position: absolute;
+      width: 370px;
+      height: 170px;
+      image-rendering: pixelated;
+    }
+    .craft-item {
+      position: absolute;
+      width: 33px;
+      height: 35px;
+      image-rendering: pixelated;
+    }
+
+    .no-recipe {
+      border-radius: 8px;
+      border: 1px solid rgba(239,68,68,0.4);
+      background: rgba(127,0,0,0.2);
+      padding: 12px 16px;
+      font-size: 0.875rem;
+      color: #fca5a5;
+    }
+
+    /* Toast */
+    .toast-container {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      background: rgba(21,128,61,0.9);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      animation: fadeInUp 0.2s ease;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <div class="card">
+
+    <!-- Header -->
+    <div class="header">
+      <p class="header-brand">Gravel Host</p>
+      <p class="header-title">Firework Creator</p>
+      <p class="header-desc">Design custom Minecraft fireworks with colors, shapes, and effects. Generate give and summon commands instantly.</p>
+    </div>
+
+    <div class="grid-2col">
+
+      <!-- Left: Controls -->
+      <div class="controls">
+
+        <!-- Primary Colors -->
+        <div>
+          <p class="section-title">Primary Colors</p>
+          <p class="section-sublabel">Firework particle colors (max 6)</p>
+          <div class="color-grid" id="primaryColorGrid"></div>
+        </div>
+
+        <!-- Fading Colors -->
+        <div>
+          <p class="section-title">Fading Colors</p>
+          <p class="section-sublabel">Colors the explosion fades to (max 6)</p>
+          <div class="color-grid" id="fadingColorGrid"></div>
+        </div>
+
+        <!-- Explosion Shape -->
+        <div>
+          <p class="section-label">Explosion Shape</p>
+          <div class="img-btn-grid cols-5" id="shapeGrid"></div>
+        </div>
+
+        <!-- Effect + Flight side by side -->
+        <div class="side-by-side">
+          <div>
+            <p class="section-label">Firework Effect</p>
+            <div class="img-btn-grid cols-2" id="effectGrid"></div>
+          </div>
+          <div>
+            <p class="section-label">Flight Duration</p>
+            <div class="img-btn-grid cols-3" id="flightGrid"></div>
+          </div>
+        </div>
+
+        <!-- Errors -->
+        <div class="error-box" id="errorBox"></div>
+
+        <!-- Generate -->
+        <button class="btn-generate" onclick="handleGenerate()">Generate</button>
+
+      </div>
+
+      <!-- Right: Results -->
+      <div id="resultsPanel">
+        <div class="results-placeholder">
+          <p>Configure your firework and click Generate</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+  // ── Assets ──────────────────────────────────────────────────────────────────
+  const TEX = "https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/";
+
+  const ITEM_TEX = {
+    "Black Dye":      TEX + "black_dye.png",
+    "Blue Dye":       TEX + "blue_dye.png",
+    "Brown Dye":      TEX + "brown_dye.png",
+    "Cyan Dye":       TEX + "cyan_dye.png",
+    "Gray Dye":       TEX + "gray_dye.png",
+    "Green Dye":      TEX + "green_dye.png",
+    "Light Blue Dye": TEX + "light_blue_dye.png",
+    "Light Gray Dye": TEX + "light_gray_dye.png",
+    "Lime Dye":       TEX + "lime_dye.png",
+    "Magenta Dye":    TEX + "magenta_dye.png",
+    "Orange Dye":     TEX + "orange_dye.png",
+    "Pink Dye":       TEX + "pink_dye.png",
+    "Purple Dye":     TEX + "purple_dye.png",
+    "Red Dye":        TEX + "red_dye.png",
+    "White Dye":      TEX + "white_dye.png",
+    "Yellow Dye":     TEX + "yellow_dye.png",
+    "Gunpowder":      TEX + "gunpowder.png",
+    "Paper":          TEX + "paper.png",
+    "Diamond":        TEX + "diamond.png",
+    "Glowstone Dust": TEX + "glowstone_dust.png",
+    "Firework Star":  TEX + "firework_star.png",
+    "Firework Rocket":TEX + "firework_rocket.png",
+    "Fire Charge":    TEX + "fire_charge.png",
+    "Gold Nugget":    TEX + "gold_nugget.png",
+    "Feather":        TEX + "feather.png",
+    "Creeper Head":   TEX + "creeper_head.png",
+  };
+
+  // ── Data ────────────────────────────────────────────────────────────────────
+  const DYES = [
+    { color: "Black Dye",      deci: 1973019,  rgb: "0, 0, 0" },
+    { color: "Blue Dye",       deci: 2437522,  rgb: "0, 0, 255" },
+    { color: "Brown Dye",      deci: 5320730,  rgb: "150, 75, 0" },
+    { color: "Cyan Dye",       deci: 2651799,  rgb: "0, 100, 100" },
+    { color: "Gray Dye",       deci: 4408131,  rgb: "128, 128, 128" },
+    { color: "Green Dye",      deci: 3887386,  rgb: "0, 255, 0" },
+    { color: "Light Blue Dye", deci: 6719955,  rgb: "173, 216, 230" },
+    { color: "Light Gray Dye", deci: 11250603, rgb: "211, 211, 211" },
+    { color: "Lime Dye",       deci: 4312372,  rgb: "50, 205, 50" },
+    { color: "Magenta Dye",    deci: 12801229, rgb: "255, 0, 255" },
+    { color: "Orange Dye",     deci: 15435844, rgb: "255, 165, 0" },
+    { color: "Pink Dye",       deci: 14188952, rgb: "255, 192, 203" },
+    { color: "Purple Dye",     deci: 8073150,  rgb: "128, 0, 128" },
+    { color: "Red Dye",        deci: 11743532, rgb: "255, 0, 0" },
+    { color: "White Dye",      deci: 15790320, rgb: "255, 255, 255" },
+    { color: "Yellow Dye",     deci: 14602026, rgb: "255, 255, 0" },
+  ];
+
+  const SHAPES = [
+    { shape: "Default",    img: "default" },
+    { shape: "Large Ball", img: "large-ball" },
+    { shape: "Star",       img: "star" },
+    { shape: "Creeper",    img: "creeper" },
+    { shape: "Burst",      img: "burst" },
+  ];
+
+  const EFFECTS = [
+    { name: "Flicker", img: "flicker" },
+    { name: "Trail",   img: "trail" },
+  ];
+
+  const POWER_VALUES = [
+    { name: "Low",    img: "flight-1", level: 1 },
+    { name: "Medium", img: "flight-2", level: 2 },
+    { name: "High",   img: "flight-3", level: 3 },
+  ];
+
+  const CRAFT_POSITIONS = [
+    { left: 60,  top: 40  },
+    { left: 100, top: 40  },
+    { left: 138, top: 40  },
+    { left: 60,  top: 85  },
+    { left: 100, top: 85  },
+    { left: 138, top: 85  },
+  ];
+
+  // ── State ───────────────────────────────────────────────────────────────────
+  let primaryColors = [];
+  let fadingColors  = [];
+  let shape         = "Default";
+  let flicker       = false;
+  let trail         = false;
+  let flightPower   = 0;
+
+  // ── Helpers ─────────────────────────────────────────────────────────────────
+  function shapeType(s) {
+    switch (s) {
+      case "Large Ball": return 1;
+      case "Star":       return 2;
+      case "Creeper":    return 3;
+      case "Burst":      return 4;
+      default:           return 0;
+    }
+  }
+
+  function shapeTypeStr(s) {
+    switch (s) {
+      case "Large Ball": return "BALL_LARGE";
+      case "Star":       return "STAR";
+      case "Creeper":    return "CREEPER";
+      case "Burst":      return "BURST";
+      default:           return "BALL";
+    }
+  }
+
+  function shapeIngredient(s) {
+    switch (s) {
+      case "Large Ball": return "Fire Charge";
+      case "Star":       return "Gold Nugget";
+      case "Creeper":    return "Creeper Head";
+      case "Burst":      return "Feather";
+      default:           return "";
+    }
+  }
+
+  function fireworksPath(file) {
+    return "../../public/fireworks/" + file;
+  }
+
+  // ── Toast ────────────────────────────────────────────────────────────────────
+  function showToast(message) {
+    const container = document.getElementById("toastContainer");
+    const el = document.createElement("div");
+    el.className = "toast";
+    el.textContent = message;
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+
+  // ── Color toggle ─────────────────────────────────────────────────────────────
+  function toggleColor(color, list, setList, gridId) {
+    const idx = list.indexOf(color);
+    if (idx !== -1) {
+      setList(list.filter(c => c !== color));
+    } else if (list.length < 6) {
+      setList([...list, color]);
+    }
+    renderColorGrid(gridId, list, setList);
+    // Refresh after setList updates the reference
+    setTimeout(() => renderColorGrid(gridId,
+      gridId === "primaryColorGrid" ? primaryColors : fadingColors,
+      gridId === "primaryColorGrid"
+        ? v => { primaryColors = v; }
+        : v => { fadingColors = v; }
+    ), 0);
+  }
+
+  // ── Render functions ──────────────────────────────────────────────────────────
+  function renderColorGrid(gridId, selected, setFn) {
+    const grid = document.getElementById(gridId);
+    grid.innerHTML = "";
+    DYES.forEach(dye => {
+      const active = selected.includes(dye.color);
+      const btn = document.createElement("button");
+      btn.className = "color-btn" + (active ? " active" : "");
+      btn.title = dye.color;
+      btn.innerHTML = `<img src="${ITEM_TEX[dye.color]}" alt="${dye.color}" /><span>${dye.color.replace(" Dye", "")}</span>`;
+      btn.addEventListener("click", () => {
+        const idx = selected.indexOf(dye.color);
+        if (idx !== -1) {
+          setFn(selected.filter(c => c !== dye.color));
+        } else if (selected.length < 6) {
+          setFn([...selected, dye.color]);
+        }
+        renderColorGrid(gridId,
+          gridId === "primaryColorGrid" ? primaryColors : fadingColors,
+          setFn
+        );
+      });
+      grid.appendChild(btn);
+    });
+  }
+
+  function renderShapeGrid() {
+    const grid = document.getElementById("shapeGrid");
+    grid.innerHTML = "";
+    SHAPES.forEach(s => {
+      const btn = document.createElement("button");
+      btn.className = "img-btn" + (shape === s.shape ? " active" : "");
+      btn.innerHTML = `<img src="${fireworksPath(s.img + ".png")}" alt="${s.shape}" /><p>${s.shape}</p>`;
+      btn.addEventListener("click", () => {
+        shape = s.shape;
+        renderShapeGrid();
+      });
+      grid.appendChild(btn);
+    });
+  }
+
+  function renderEffectGrid() {
+    const grid = document.getElementById("effectGrid");
+    grid.innerHTML = "";
+    EFFECTS.forEach(e => {
+      const active = e.name === "Flicker" ? flicker : trail;
+      const btn = document.createElement("button");
+      btn.className = "img-btn" + (active ? " active" : "");
+      btn.innerHTML = `<img src="${fireworksPath(e.img + ".png")}" alt="${e.name}" /><p>${e.name}</p>`;
+      btn.addEventListener("click", () => {
+        if (e.name === "Flicker") flicker = !flicker;
+        else trail = !trail;
+        renderEffectGrid();
+      });
+      grid.appendChild(btn);
+    });
+  }
+
+  function renderFlightGrid() {
+    const grid = document.getElementById("flightGrid");
+    grid.innerHTML = "";
+    POWER_VALUES.forEach(p => {
+      const btn = document.createElement("button");
+      btn.className = "img-btn" + (flightPower === p.level ? " active" : "");
+      btn.innerHTML = `<img src="${fireworksPath(p.img + ".png")}" alt="${p.name}" /><p>${p.name}</p>`;
+      btn.addEventListener("click", () => {
+        flightPower = p.level;
+        renderFlightGrid();
+      });
+      grid.appendChild(btn);
+    });
+  }
+
+  // ── Crafting table builder ────────────────────────────────────────────────────
+  function makeCraftingTable(items) {
+    // items: array of { tex, alt, style: {left?, right?, top} }
+    const wrap = document.createElement("div");
+    wrap.className = "crafting-table-wrap";
+    const inner = document.createElement("div");
+    inner.className = "crafting-table-inner";
+    const bg = document.createElement("img");
+    bg.className = "table-bg";
+    bg.src = fireworksPath("crafting-table.png");
+    bg.alt = "crafting table";
+    inner.appendChild(bg);
+    items.forEach(item => {
+      const img = document.createElement("img");
+      img.className = "craft-item";
+      img.src = item.tex;
+      img.alt = item.alt;
+      if (item.style.left  !== undefined) img.style.left  = item.style.left  + "px";
+      if (item.style.right !== undefined) img.style.right = item.style.right + "px";
+      img.style.top = item.style.top + "px";
+      inner.appendChild(img);
+    });
+    wrap.appendChild(inner);
+    return wrap;
+  }
+
+  // ── Output field builder ──────────────────────────────────────────────────────
+  function makeOutputField(label, value, multiline) {
+    const div = document.createElement("div");
+    div.className = "output-field";
+    const lbl = document.createElement("p");
+    lbl.className = "section-title";
+    lbl.textContent = label;
+    div.appendChild(lbl);
+    const row = document.createElement("div");
+    row.className = "output-row";
+    let input;
+    if (multiline) {
+      input = document.createElement("textarea");
+      input.className = "output-textarea";
+      input.rows = 5;
+    } else {
+      input = document.createElement("input");
+      input.className = "output-input";
+      input.type = "text";
+    }
+    input.readOnly = true;
+    input.value = value;
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "btn-copy";
+    copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy`;
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(value);
+      showToast("Copied successfully!");
+    });
+    row.appendChild(input);
+    row.appendChild(copyBtn);
+    div.appendChild(row);
+    return div;
+  }
+
+  // ── Generate ─────────────────────────────────────────────────────────────────
+  function handleGenerate() {
+    const errs = [];
+    if (!primaryColors.length) errs.push("Select at least one Primary Color.");
+    if (!flightPower)          errs.push("Select a Flight Duration.");
+
+    const errorBox = document.getElementById("errorBox");
+    if (errs.length) {
+      errorBox.style.display = "block";
+      errorBox.innerHTML = errs.map(e => `<p>${e}</p>`).join("");
+      return;
+    }
+    errorBox.style.display = "none";
+
+    const type     = shapeType(shape);
+    const flickStr = flicker ? ",Flicker:1" : "";
+    const trailStr = trail   ? ",Trail:1"   : "";
+    const primary  = primaryColors.map(c => DYES.find(d => d.color === c).deci);
+    const fading   = fadingColors.map(c  => DYES.find(d => d.color === c).deci);
+    const fadePart = fading.length ? `,FadeColors:[I;${fading.join(",")}]` : "";
+
+    const giveCmd =
+      `/give @s firework_rocket{Fireworks:{Flight:${flightPower},Explosions:[{Type:${type}${flickStr}${trailStr},Colors:[I;${primary.join(",")}]${fadePart}}]}} 1`;
+
+    const summonCmd =
+      `/summon firework_rocket ~ ~ ~ {FireworksItem:{id:firework_rocket,Count:1,tag:{Fireworks:{Flight:${flightPower},Explosions:[{Type:${type}${flickStr}${trailStr},Colors:[I;${primary.join(",")}]${fadePart}}]}}}}`;
+
+    const primarySpigot = primaryColors
+      .map(c => `.withColor(Color.fromRGB(${DYES.find(d => d.color === c).rgb}))`)
+      .join("");
+    const fadingSpigot = fadingColors
+      .map(c => `.withFade(Color.fromRGB(${DYES.find(d => d.color === c).rgb}))`)
+      .join("");
+
+    const spigotCode =
+      `ItemStack firework = new ItemStack(Material.FIREWORK_ROCKET);\n` +
+      `FireworkMeta meta = (FireworkMeta) firework.getItemMeta();\n` +
+      `meta.addEffect(FireworkEffect.builder()${primarySpigot}.with(FireworkEffect.Type.${shapeTypeStr(shape)})${flicker ? ".withFlicker()" : ""}${trail ? ".withTrail()" : ""}${fadingSpigot}.build());\n` +
+      `meta.setPower(${flightPower});\n` +
+      `firework.setItemMeta(meta);`;
+
+    const hasRecipe =
+      !(flicker && trail) &&
+      primaryColors.length <= 6 &&
+      fadingColors.length <= 6;
+
+    renderResults({ giveCmd, summonCmd, spigotCode, hasRecipe });
+  }
+
+  function renderResults({ giveCmd, summonCmd, spigotCode, hasRecipe }) {
+    const panel = document.getElementById("resultsPanel");
+    panel.innerHTML = "";
+
+    const results = document.createElement("div");
+    results.className = "results";
+
+    results.appendChild(makeOutputField("Firework Give Command",   giveCmd,    false));
+    results.appendChild(makeOutputField("Firework Summon Command", summonCmd,  false));
+    results.appendChild(makeOutputField("Spigot API Code",         spigotCode, true));
+
+    // Crafting recipe section
+    const craftingSection = document.createElement("div");
+    craftingSection.className = "crafting-section";
+
+    const craftTitle = document.createElement("h3");
+    craftTitle.className = "crafting-title";
+    craftTitle.textContent = "Crafting Recipe";
+    craftingSection.appendChild(craftTitle);
+
+    if (hasRecipe) {
+      const steps = document.createElement("div");
+      steps.className = "crafting-steps";
+
+      // Step 1: Firework Star
+      const step1Label = document.createElement("h4");
+      step1Label.className = "crafting-step-title";
+      step1Label.textContent = "Step 1: Firework Star";
+      steps.appendChild(step1Label);
+
+      const step1Items = [
+        { tex: ITEM_TEX["Firework Star"], alt: "Firework Star", style: { right: 76, top: 85 } },
+        { tex: ITEM_TEX["Gunpowder"],     alt: "Gunpowder",     style: { left: 60, top: 128 } },
+      ];
+      const ingr = shapeIngredient(shape);
+      if (ingr) step1Items.push({ tex: ITEM_TEX[ingr], alt: ingr, style: { left: 100, top: 128 } });
+      if (flicker) step1Items.push({ tex: ITEM_TEX["Glowstone Dust"], alt: "Glowstone Dust", style: { left: 138, top: 128 } });
+      else if (trail) step1Items.push({ tex: ITEM_TEX["Diamond"], alt: "Diamond", style: { left: 138, top: 128 } });
+      primaryColors.forEach((color, i) => {
+        step1Items.push({ tex: ITEM_TEX[color], alt: color, style: CRAFT_POSITIONS[i] });
+      });
+      steps.appendChild(makeCraftingTable(step1Items));
+
+      // Step 2 (optional): Fading Colors
+      if (fadingColors.length > 0) {
+        const step2Label = document.createElement("h4");
+        step2Label.className = "crafting-step-title";
+        step2Label.textContent = "Step 2: Fading Colors";
+        steps.appendChild(step2Label);
+
+        const step2Items = [
+          { tex: ITEM_TEX["Firework Star"], alt: "Firework Star (output)", style: { right: 76, top: 85 } },
+          { tex: ITEM_TEX["Firework Star"], alt: "Firework Star",          style: { left: 60, top: 128 } },
+        ];
+        fadingColors.forEach((color, i) => {
+          step2Items.push({ tex: ITEM_TEX[color], alt: color, style: CRAFT_POSITIONS[i] });
+        });
+        steps.appendChild(makeCraftingTable(step2Items));
+      }
+
+      // Final step: Crafting the Rocket
+      const rocketStepNum = fadingColors.length ? 3 : 2;
+      const rocketLabel = document.createElement("h4");
+      rocketLabel.className = "crafting-step-title";
+      rocketLabel.textContent = `Step ${rocketStepNum}: Crafting the Rocket`;
+      steps.appendChild(rocketLabel);
+
+      const rocketItems = [
+        { tex: ITEM_TEX["Firework Star"],   alt: "Firework Star",   style: { left: 60,  top: 85 } },
+        { tex: ITEM_TEX["Paper"],           alt: "Paper",           style: { left: 100, top: 85 } },
+        { tex: ITEM_TEX["Gunpowder"],       alt: "Gunpowder",       style: { left: 138, top: 85 } },
+        { tex: ITEM_TEX["Firework Rocket"], alt: "Firework Rocket", style: { right: 76, top: 85 } },
+      ];
+      if (flightPower > 1)   rocketItems.push({ tex: ITEM_TEX["Gunpowder"], alt: "Gunpowder", style: { left: 138, top: 40  } });
+      if (flightPower === 3) rocketItems.push({ tex: ITEM_TEX["Gunpowder"], alt: "Gunpowder", style: { left: 138, top: 128 } });
+      steps.appendChild(makeCraftingTable(rocketItems));
+
+      craftingSection.appendChild(steps);
+    } else {
+      const noRecipe = document.createElement("div");
+      noRecipe.className = "no-recipe";
+      noRecipe.innerHTML = "<strong>No crafting recipe available.</strong> Confirm that you have up to 6 primary colors, fewer than 7 fading colors, and less than 2 effects to view the vanilla recipe.";
+      craftingSection.appendChild(noRecipe);
+    }
+
+    results.appendChild(craftingSection);
+    panel.appendChild(results);
+    panel.scrollIntoView({ behavior: "smooth" });
+  }
+
+  // ── Init ─────────────────────────────────────────────────────────────────────
+  (function init() {
+    renderColorGrid("primaryColorGrid", primaryColors, v => { primaryColors = v; });
+    renderColorGrid("fadingColorGrid",  fadingColors,  v => { fadingColors  = v; });
+    renderShapeGrid();
+    renderEffectGrid();
+    renderFlightGrid();
+  })();
+</script>
+</body>
+</html>
