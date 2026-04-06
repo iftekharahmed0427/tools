@@ -13,18 +13,30 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Info, Search } from "lucide-react";
 import Image from "next/image";
 
+interface MotdNode {
+  color?: string;
+  text?: string;
+  bold?: boolean;
+  extra?: (MotdNode | string)[];
+}
+
 interface ServerStatus {
   status: string;
   online: boolean;
   motd: string;
-  motd_json: string | { extra?: MotdExtra[] };
+  motd_json: string | MotdNode;
   players: { now: number; max: number };
   favicon: string;
 }
 
-interface MotdExtra {
-  color?: string;
-  text?: string;
+function flattenMotdNode(node: MotdNode | string): string {
+  if (typeof node === "string") return node;
+  let result = "";
+  if (node.bold) result += "§l";
+  if (node.color) result += `%${node.color}%`;
+  result += node.text ?? "";
+  if (node.extra) result += node.extra.map(flattenMotdNode).join("");
+  return result;
 }
 
 function formatMOTD(text: string): string {
@@ -81,7 +93,6 @@ export default function ServerInfo() {
   const [searchValue, setSearchValue] = useState(getInitialServer);
   const [status, setStatus] = useState<ServerStatus | null>(null);
   const [loading, setLoading] = useState(false);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const initialFetchDone = useRef(false);
 
   const fetchServerStatus = useCallback(async (ip: string) => {
@@ -93,17 +104,9 @@ export default function ServerInfo() {
 
       if (data.status !== "error") {
         const motdJson = data.motd_json;
-        if (typeof motdJson === "object" && motdJson?.extra) {
-          const asString = motdJson.extra.reduce((acc: string, item) => {
-            if (typeof item === "object" && item.color) {
-              return acc + `%${item.color}%${item.text ?? ""}`;
-            }
-            return acc + (typeof item === "object" ? item.text ?? "" : String(item));
-          }, "");
-          data.motd_json = formatMOTD(asString);
-        } else {
-          data.motd_json = formatMOTD(typeof motdJson === "string" ? motdJson : "");
-        }
+        data.motd_json = formatMOTD(
+          typeof motdJson === "string" ? motdJson : flattenMotdNode(motdJson)
+        );
       }
 
       setStatus(data);
@@ -120,18 +123,9 @@ export default function ServerInfo() {
     fetchServerStatus(searchValue);
   }
 
-  const handleInput = useCallback(
-    (value: string) => {
-      setSearchValue(value);
-      if (!value) return;
-
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-      debounceRef.current = setTimeout(() => {
-        fetchServerStatus(value);
-      }, 500);
-    },
-    [fetchServerStatus]
-  );
+  const handleInput = (value: string) => {
+    setSearchValue(value);
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === " ") e.preventDefault();
