@@ -504,7 +504,7 @@
       btn.className = "pattern-btn" + (layers[activeTab].pattern === p ? " selected" : "");
       btn.disabled = activeTab === 0;
       const img = document.createElement("img");
-      img.src = `/banner/${p}.png`;
+      img.src = `/tools/banner/${p}.png`;
       img.alt = p;
       btn.appendChild(img);
       btn.addEventListener("click", () => setPattern(p));
@@ -531,7 +531,7 @@
 
     const base = colorByHex(layers[0].color);
     const baseImg = document.createElement("img");
-    baseImg.src = "/banner/base.png";
+    baseImg.src = "/tools/banner/base.png";
     baseImg.alt = "Banner base";
     if (base) baseImg.style.filter = base.filter;
     container.appendChild(baseImg);
@@ -539,7 +539,7 @@
     layers.slice(1).forEach((layer, i) => {
       if (!layer.pattern) return;
       const img = document.createElement("img");
-      img.src = `/banner/${layer.pattern}.png`;
+      img.src = `/tools/banner/${layer.pattern}.png`;
       img.alt = `Layer ${i + 1}`;
       const c = colorByHex(layer.color);
       if (c) img.style.filter = c.filter;
