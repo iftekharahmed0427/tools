@@ -388,6 +388,7 @@ function PropertyInput({
         {propKey === "motd" && (
           <a
             href="https://gravelhost.com/minecraft-motd-editor"
+            target="_blank"
             className="text-xs text-[#2B7FFF] hover:text-[#2B7FFF]/80 transition-colors"
           >
             Need a MOTD? Use our MOTD Editor →
