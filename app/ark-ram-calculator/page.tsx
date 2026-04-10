@@ -11,12 +11,11 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Boxes, Flame, Info, Layers, Leaf, Package, Zap } from "lucide-react";
+import { Boxes, Flame, Info, Layers, Leaf, Package } from "lucide-react";
 
 const TIERS = {
   budget: { label: "Budget", pricePerGb: 0.9 },
   premium: { label: "Premium", pricePerGb: 1.5 },
-  ultimate: { label: "Ultimate", pricePerGb: 3 },
 } as const;
 type Tier = keyof typeof TIERS;
 
@@ -61,7 +60,7 @@ export default function ArkRamCalculator() {
 
   return (
     <div className="container mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-2 md:py-2 space-y-4 bg-transparent">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
         <Button
           variant="outline"
           size="lg"
@@ -79,15 +78,6 @@ export default function ArkRamCalculator() {
         >
           <Flame className="size-5 sm:size-6" />
           {TIERS.premium.label}
-        </Button>
-        <Button
-          variant="outline"
-          size="lg"
-          className={`${buttonBase} ${tier === "ultimate" ? buttonActive : buttonInactive}`}
-          onClick={() => setTier("ultimate")}
-        >
-          <Zap className="size-5 sm:size-6" />
-          {TIERS.ultimate.label}
         </Button>
       </div>
 
