@@ -11,16 +11,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
-  Copy,
-  Check,
   Download,
   Info,
   Loader2,
   Search,
 } from "lucide-react";
-
-const BASE_URL =
-  process.env.NEXT_PUBLIC_CAPE_GRABBER_URL ?? "http://localhost";
 
 interface CapeData {
   hash: string;
@@ -53,12 +48,6 @@ export default function CapeGrabber() {
   const [loading, setLoading] = useState(false);
   const [noCapes, setNoCapes] = useState(false);
   const [capes, setCapes] = useState<CapeData[]>([]);
-  const [copied, setCopied] = useState(false);
-
-  const shareableLink = currentSearch
-    ? `${BASE_URL}/cape-grabber#ign=${currentSearch}`
-    : "";
-
   const fetchCapes = useCallback(
     async (username: string) => {
       if (!username || username.length > 16) return;
@@ -101,16 +90,8 @@ export default function CapeGrabber() {
   );
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.hash.slice(1));
-    const ign = params.get("ign");
-
-    if (ign) {
-      setSearchValue(ign);
-      fetchCapes(ign);
-    } else {
-      setSearchValue("Notch");
-      fetchCapes("Notch");
-    }
+    setSearchValue("Notch");
+    fetchCapes("Notch");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -120,12 +101,6 @@ export default function CapeGrabber() {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === " ") e.preventDefault();
-  };
-
-  const copyLink = async () => {
-    await navigator.clipboard.writeText(shareableLink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   const downloadCape = async (imageUrl: string) => {
@@ -224,32 +199,6 @@ export default function CapeGrabber() {
             )}
           </div>
 
-          {/* Shareable link */}
-          {!loading && currentSearch && (
-            <div className="flex flex-col mt-6 sm:mt-8 items-center">
-              <h3 className="font-medium text-white text-base sm:text-lg text-center">
-                Shareable Link
-              </h3>
-              <div className="flex gap-2 sm:gap-3 mt-2 w-full max-w-md">
-                <input
-                  disabled
-                  value={shareableLink}
-                  className="flex-1 min-w-0 text-xs sm:text-sm text-gray-400 font-mono rounded-md p-2 bg-[#141517] h-[35px] border border-[#222F45] truncate"
-                />
-                <Button
-                  onClick={copyLink}
-                  className={`${buttonBase} ${buttonStyle} text-sm px-3 h-[35px] shrink-0`}
-                >
-                  {copied ? (
-                    <Check className="size-4" />
-                  ) : (
-                    <Copy className="size-4" />
-                  )}
-                  {copied ? "Copied" : "Copy"}
-                </Button>
-              </div>
-            </div>
-          )}
         </CardContent>
       </Card>
 
