@@ -20,14 +20,15 @@ type ModLevel = "vanilla" | "light" | "heavy";
 
 const MAPS = {
   "the-island":     { label: "The Island",     vanilla: 8,  light: 10, heavy: 12 },
-  "the-center":     { label: "The Center",     vanilla: 8,  light: 10, heavy: 12 },
   "scorched-earth": { label: "Scorched Earth", vanilla: 8,  light: 10, heavy: 12 },
   aberration:       { label: "Aberration",     vanilla: 8,  light: 10, heavy: 12 },
   extinction:       { label: "Extinction",     vanilla: 10, light: 12, heavy: 15 },
-  ragnarok:         { label: "Ragnarok",       vanilla: 10, light: 12, heavy: 15 },
+  "the-center":     { label: "The Center",     vanilla: 10, light: 12, heavy: 15 },
+  ragnarok:         { label: "Ragnarok",       vanilla: 12, light: 15, heavy: 18 },
   valguero:         { label: "Valguero",       vanilla: 10, light: 12, heavy: 15 },
-  "lost-colony":    { label: "Lost Colony",    vanilla: 13, light: 15, heavy: 18 },
-  astraeos:         { label: "Astraeos",       vanilla: 13, light: 15, heavy: 18 },
+  "crystal-isles":  { label: "Crystal Isles",  vanilla: 10, light: 12, heavy: 15 },
+  "lost-island":    { label: "Lost Island",    vanilla: 10, light: 12, heavy: 15 },
+  fjordur:          { label: "Fjordur",        vanilla: 12, light: 15, heavy: 18 },
 } as const;
 type MapKey = keyof typeof MAPS;
 
